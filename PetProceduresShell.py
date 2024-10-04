@@ -1,12 +1,10 @@
+#Evan Mogford 3rd period
+
+#import and the important bits
 import random
 import time
 import tkinter as tk
 from tkinter import ttk
-# Remember:
-	# trigger some special events randomly
-	# we can ONLY affect the primary stat in the procedure
-		#since that is the only one represented by a parameter
-	# at least 1 procedure should have more options for the user
 
 #makes tmp fuctions for buttons
 def test():
@@ -25,6 +23,15 @@ class pet:
 	root.geometry("720x600")
 	frame = ttk.Frame(root, width=500, height=500, padding = 10)
 	frame.grid(column=1, row=1)
+
+	def __init__(self):
+		self.name_set()
+		self.root.mainloop()
+
+	#quit option
+	quit_frame = ttk.Frame(root,width=50)
+	quit_frame.grid(column=1, row=2)
+	close = tk.Button(quit_frame, text = "quit", width = 31, height = 5, command = root.destroy).grid(column=1,row=1)
 	
 	#top text
 	big_label = tk.Label(root, text = 'Welcome to my simulator').grid(column=1,row=0)
@@ -40,29 +47,42 @@ class pet:
 	#set the name
 	def name_set(self):
 		#make the frame
-		name_frame = ttk.Frame(self.root, padding = 10).grid(column=1, row=1)
+		name_frame = ttk.Frame(self.root, padding = 10)
+		name_frame.grid(column=1, row=1)
 
-		#to close the window and open the normal one
+		#to close the window and open the normal one, also assigns the name var
 		def submit_name():
+			self.name = name_var.get()
 			name_frame.destroy()
 			self.main_menu()
+			title.destroy()
+			name_get.destroy()
+			submit_it.destroy()
+			self.update_stats()
 
-		#all the buttons and stuff
-		title = tk.Label(self.frame, text = "pet name:").grid(column= 0, row= 0)
+		#label, entry box, and submit button
+		title = tk.Label(self.frame, text = "pet name:")
+		title.grid(column= 0, row= 0)
 		name_var = tk.StringVar()
-		name_get = tk.Entry(self.frame, textvariable= name_var).grid(column=1,row=0)
-		self.name = name_var.get()
-		submit_it = tk.Button(self.frame, text = "submit", command = submit_name).grid(column=1,row=1)
+		name_get = tk.Entry(self.frame, textvariable= name_var)
+		name_get.grid(column=1,row=0)
+		submit_it = tk.Button(self.frame, text = "submit", command = submit_name)
+		submit_it.grid(column=1,row=1)
+
+	#make the main menu
 	def main_menu(self):
 		C1 = tk.Button(self.frame, text = "feed", width=15, height=10, command=self.feed).grid(column = 0, row = 0) 
 		C2 = tk.Button(self.frame, text = "sleep", width=15, height=10, command =self.sleep).grid(column=1, row=0)
-		close = tk.Button(self.frame, text = "quit", width = 15, height = 10, command = self.root.destroy).grid(column=1,row=1)
+		C3 = tk.Button(self.frame, text = "play", width = 15, height=10, command = self.play).grid(column=1,row=1)
+		C4 = tk.Button(self.frame, text = "gamble", width = 15, height=10, command = self.gamble).grid(column=0,row=1)
+		
 
+	#updates all the stats in the stat window
 	def update_stats(self):
-		status_fullness = tk.Message(self.status, text = ("fullness:" , self.fullness, "%"), width= 100).grid(column=0,row=0)
-		status_energy = tk.Message(self.status, text = ("energy:", self.energy, "%"), width= 100).grid(column=0, row=1)
-		status_weight = tk.Message(self.status, text = ("weight:", self.weight, "lb"), width= 100).grid(column=0, row=2)
-		status_money = tk.Message(self.status, text = ("money: $", self.money), width= 100).grid(column=0, row=3)
+		status_fullness = tk.Message(self.status, text = ("fullness:" , self.fullness, "%"), width= 90).grid(column=0,row=0)
+		status_energy = tk.Message(self.status, text = ("energy:", self.energy, "%"), width= 90).grid(column=0, row=1)
+		status_weight = tk.Message(self.status, text = ("weight:", self.weight, "lb"), width= 90).grid(column=0, row=2)
+		status_money = tk.Message(self.status, text = ("money: %", self.money), width= 90).grid(column=0, row=3)
 
 	#check if any stat gets too low and causes the pet to leave
 	def death(self):
@@ -81,6 +101,17 @@ class pet:
 		self.energy -=10
 		self.money += 10
 		self.update_stats()
+
+	#for the functions that dont open a new frame, its easier to have this that removes the base frame and stuff
+	def regular_death(self):
+		self.game_tick()
+		if self.fullness <= 0 or self.weight <= 0 or self.weight > 200 or self.energy <= 0 or self.money <= 0:
+			self.frame.destroy()
+			death_frame = ttk.Frame(self.root, width=500, height = 500, padding = 10)
+			death_frame.grid(column=1, row=1)
+			self.big_label = tk.Label(self.root, text = (self.name + " left you for someone who treats them better"), width = 70).grid(column = 1, row = 0)
+			close = tk.Button(death_frame, text = "quit", width = 30, height = 20, command = self.root.destroy).grid(column=1, row = 1)
+
 		
 	
 		
@@ -90,7 +121,7 @@ class pet:
 		food_frame = ttk.Frame(self.root, width=500, height= 500, padding = 10)
 		food_frame.grid(column=1, row=1)
 
-		#death while in the food menu
+		#death while in the food menu b/c it's a different frame
 		def death():
 			self.game_tick()
 			if self.fullness <= 0 or self.weight <= 0 or self.weight > 200 or self.energy <= 0 or self.money <= 0:
@@ -110,7 +141,7 @@ class pet:
 		def remove():
 			food_frame.destroy()
 
-		#different foods
+		#different foods, different vaule adjustments
 		def premium_feed():
 			if self.fullness < 100:
 				self.fullness = 100
@@ -148,9 +179,9 @@ class pet:
 		regular = tk.Button(food_frame, text = "Regular Food \n -$10", width=15, height=10, command = regular_feed).grid(column=1, row=0)
 		cheap = tk.Button(food_frame, text = "cheap Food \n -$5", width=15, height=10, command = cheap_feed).grid(column=0, row=1)
 
-		
+	#sleep action, raises energy	
 	def sleep(self):
-		self.game_tick()
+		self.regular_death()
 		ran = random.randrange(0,10)
 		if ran == 1:
 			self.main_label(self.name + " could not fall asleep")
@@ -160,10 +191,30 @@ class pet:
 		else:
 			self.main_label(self.name + " was too energized to sleep")
 
+	#play, lowers weight at the cost of energy and fullness
+	def play(self):
+		self.regular_death()
+		ran = random.randrange(0,10)
+		if ran == 1:
+			self.main_label(self.name +" Had to be cleaned")
+			self.money -=50
+		elif ran != 1:
+			self.main_label(self.name +" had fun playing")
+		self.energy -= 30
+		self.weight -=10
+		self.fullness -=10
 
+	#gamble, all gamblers quit right before their big win.....
+	def gamble(self):
+		self.game_tick()
+		ran = random.randrange(0,500)
+		if ran == 1:
+			self.main_label("you win $50,000!")
+			self.money += 50000
+		else:
+			self.main_label("you didn't win...")
+			self.money -= 10	
 
-
-'''(4) CREATE at least 2 more actions/procedures'''
 
 #valids any numerical inputs
 #do i even need this?

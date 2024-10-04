@@ -1,25 +1,12 @@
-import random
-import time 
-import tkinter as tk
-from tkinter import ttk
-
 #This allows us to use procedures in another file
-from PetProceduresShell import *  
+from PetProceduresShell import *;  bob = pet()
+
+#initializes the pet object
 
 
-bob = pet()
+#starts up the chain of functions, first asks for the name of the pet but that automaticically chains in the object to the other funcitons
+#bob.name_set()
 
+#it the thing that makes it loop.....
+#bob.root.mainloop()
 
-
-
-def test():
-    pass
-
-
-#first time to just show stats
-bob.update_stats()
-
-#main menu buttons
-bob.name_set()
-
-bob.root.mainloop()

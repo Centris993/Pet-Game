@@ -1,4 +1,4 @@
-#Evan Mogford 3rd period
+
 
 #import and the important bits
 import random
